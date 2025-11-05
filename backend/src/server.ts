@@ -1,17 +1,28 @@
 import express from "express";
 import dotenv from "dotenv";
-import { startImapConnection } from "./imap/imapService";
+import { ImapFlow } from "imapflow";
+import { fetchLatestEmails } from "./imap/imapService";
 
 dotenv.config();
 
 const app = express();
-app.use(express.json());
+const PORT = process.env.PORT || 4000;
 
-app.get("/", (req, res) => {
-  res.send("ReachInbox Backend Running ✅");
+const client = new ImapFlow({
+  host: "imap.gmail.com",
+  port: 993,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER!,
+    pass: process.env.EMAIL_PASS!,
+  },
+  logger: false, // removed logs for clean terminal
 });
 
-app.listen(4000, () => {
-  console.log("Server started on port 4000");
-  startImapConnection(); // Start IMAP sync on startup
+app.listen(PORT, async () => {
+  console.log(`🚀 Server started on port ${PORT}`);
+  await client.connect();
+  console.log("✅ Connected to Gmail IMAP");
+
+  await fetchLatestEmails(client);
 });
