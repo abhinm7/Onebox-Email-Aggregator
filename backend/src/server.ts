@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { ImapFlow } from "imapflow";
 import { fetchLatestEmails } from "./imap/imapService";
 import { createEmailIndex } from "./search/emailIndex";
+import searchRoutes from "./routes/searchRoutes";
 
 dotenv.config();
 
@@ -17,7 +18,6 @@ const PORT = process.env.PORT || 4000;
   }
 })();
 
-
 const client = new ImapFlow({
   host: "imap.gmail.com",
   port: 993,
@@ -29,10 +29,11 @@ const client = new ImapFlow({
   logger: false, // removed logs for clean terminal
 });
 
+app.use('/', searchRoutes)
+
 app.listen(PORT, async () => {
   console.log(`🚀 Server started on port ${PORT}`);
   await client.connect();
   console.log("✅ Connected to Gmail IMAP");
-
   await fetchLatestEmails(client);
 });

@@ -5,16 +5,17 @@ interface EmailDocument {
   subject: string;
   body: string;
   date: string;
-  category: string; 
-  account: string;  
-  folder: string; 
+  category: string;
+  account: string;
+  folder: string;
 }
 
 export async function storeEmailInSearch(email: EmailDocument) {
   await elasticClient.index({
     index: "emails",
+    id: `${email.subject}_${email.date}`, // unique per email
     document: email,
-    // refresh: "wait_for", // uncomment for immediate searchability (slower)
   });
+
   console.log(`📨 Indexed email: ${email.subject} (${email.category})`);
 }

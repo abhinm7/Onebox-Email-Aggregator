@@ -2,6 +2,7 @@ import { simpleParser } from "mailparser";
 import { categorizeEmail } from "../ai/emailCategorizer";
 import { notifyInterestedEmail } from "../utils/notifier";
 import { storeEmailInSearch } from "../search/storeEmail";
+import { cleanEmailBody } from "../lib/emailParser";
 
 export async function fetchLatestEmails(client: any) {
     // Open the main INBOX
@@ -28,13 +29,12 @@ export async function fetchLatestEmails(client: any) {
         const date = message.envelope.date;
 
         const parsed = await simpleParser(message.source);
-        const body =
-            parsed.text && typeof parsed.text === "string" && parsed.text.trim()
-                ? parsed.text.trim()
-                : parsed.html && typeof parsed.html === "string"
-                    ? parsed.html.replace(/<[^>]*>?/gm, "").trim()
-                    : "(No body)";
+        const rawText =
+            (typeof parsed.text === "string" && parsed.text.trim()) ||
+            (typeof parsed.html === "string" && parsed.html.trim()) ||
+            undefined;
 
+        const body = cleanEmailBody(rawText);
 
         // console.log("\nFrom:", from);
         console.log("Subject:", subject);
