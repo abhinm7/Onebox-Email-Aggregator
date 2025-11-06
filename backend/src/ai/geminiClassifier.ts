@@ -6,7 +6,7 @@ export const classifyWithGemini = async (content: string) => {
     const api_key = process.env.GEMINI_API_KEY;
     if (!api_key) return "Uncategorized";
 
-    try {
+    try {``
         const res = await axios.post(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${api_key}`,
             { contents: [{ parts: [{ text: prompt + content }] }] }

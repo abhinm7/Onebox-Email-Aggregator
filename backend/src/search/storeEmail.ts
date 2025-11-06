@@ -1,21 +1,16 @@
 import { elasticClient } from "../configs/elasticClient";
+import { EmailDocument } from "../imap/types";
+import crypto from "crypto";
 
-interface EmailDocument {
-  from: string;
-  subject: string;
-  body: string;
-  date: string;
-  category: string;
-  account: string;
-  folder: string;
-}
+export async function storeEmailInSearch(email: EmailDocument): Promise<void> {
+  // Create stable unique ID — message-id preferred, else hash fallback
+  const uniqueId =
+    email.messageId ||
+    crypto.createHash("sha256").update(email.subject + email.date + email.from).digest("hex");
 
-export async function storeEmailInSearch(email: EmailDocument) {
   await elasticClient.index({
     index: "emails",
-    id: `${email.subject}_${email.date}`, // unique per email
+    id: uniqueId,
     document: email,
   });
-
-  console.log(`📨 Indexed email: ${email.subject} (${email.category})`);
 }
