@@ -2,11 +2,21 @@ import express from "express";
 import dotenv from "dotenv";
 import { ImapFlow } from "imapflow";
 import { fetchLatestEmails } from "./imap/imapService";
+import { createEmailIndex } from "./search/emailIndex";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+(async () => {
+  try {
+    await createEmailIndex();
+  } catch (e) {
+    console.error("Failed to ensure email index:", e);
+  }
+})();
+
 
 const client = new ImapFlow({
   host: "imap.gmail.com",

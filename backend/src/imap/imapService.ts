@@ -1,12 +1,12 @@
 import { simpleParser } from "mailparser";
 import { categorizeEmail } from "../ai/emailCategorizer";
-import axios from "axios";
+import { notifyInterestedEmail } from "../utils/notifier";
+import { storeEmailInSearch } from "../search/storeEmail";
 
 export async function fetchLatestEmails(client: any) {
     // Open the main INBOX
     const mailbox = await client.mailboxOpen("INBOX");
 
-    // Calculate the range for the last 5 emails
     const total = mailbox.exists;
 
     if (total === 0) {
@@ -14,7 +14,8 @@ export async function fetchLatestEmails(client: any) {
         return;
     }
 
-    const rangeStart = Math.max(1, total - 50); // last 3 emails
+    // Calculate the range for the last 10 emails
+    const rangeStart = Math.max(1, total - 1);
     const sequence = `${rangeStart}:*`;
 
     console.log(`Fetching last ${total - rangeStart + 1} emails...`);
@@ -42,21 +43,25 @@ export async function fetchLatestEmails(client: any) {
 
         // AI categorize
         const category = await categorizeEmail(subject, body);
-        console.log(" Category:", category);
+        console.log("Category:", category);
+
+        await storeEmailInSearch({
+            from: from || "(unknown)",
+            subject,
+            body,
+            date: (date ?? new Date()).toISOString(),
+            category,
+            account: process.env.EMAIL_USER || "gmail",
+            folder: "INBOX",
+        });
 
         // Optional webhook
         if (category === "Interested" && process.env.WEBHOOK_URL) {
-            // await axios.post(process.env.WEBHOOK_URL, {
-            //     from,
-            //     subject,
-            //     date,
-            //     category,
-            //     body: body.substring(0, 300),
-            // });
+            notifyInterestedEmail({ from, subject, category, body });
             console.log("📡 Webhook sent for Interested email!");
         }
 
-        console.log("──────────────────────────────");
+        console.log("");
     }
     const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
     // await sleep(2000); 

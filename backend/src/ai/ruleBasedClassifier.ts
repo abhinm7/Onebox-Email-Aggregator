@@ -4,7 +4,6 @@ export type EmailCategory =
   | "Not Interested"
   | "Out of Office"
   | "Spam"
-  | "Job"
   | "Uncategorized";
 
   // utility function to get typed object keys
@@ -24,7 +23,6 @@ export function keywordContentClassify(content: string): EmailCategory {
     "Not Interested": ["not interested", "decline", "position filled", "unsubscribe", "reject"],
     "Out of Office": ["out of office", "on vacation", "away from work", "auto reply"],
     Spam: ["lottery", "promotion", "discount", "buy now", "limited offer", "sale"],
-    Job: ["hiring", "job offer", "vacancy", "apply now", "shortlisted"],
     Uncategorized: [],
   };
 
@@ -34,7 +32,6 @@ export function keywordContentClassify(content: string): EmailCategory {
     "Not Interested": 0,
     "Out of Office": 0,
     Spam: 0,
-    Job: 0,
     Uncategorized: 0,
   };
 
