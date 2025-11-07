@@ -37,3 +37,9 @@ export interface WebhookEmailPayload {
   category: string;
   body: string;
 }
+
+export interface AccountConfig {
+  id: string; //
+  user: string;
+  pass: string;
+}

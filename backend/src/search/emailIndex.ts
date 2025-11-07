@@ -3,7 +3,7 @@ import { elasticClient } from "../configs/elasticClient";
 export async function createEmailIndex() {
   const exists = await elasticClient.indices.exists({ index: "emails" });
   if (exists) {
-    console.log("ℹ️ Index already exists, skipping creation.");
+    console.log("Index already exists, skipping creation.");
     return;
   }
 
@@ -15,7 +15,7 @@ export async function createEmailIndex() {
           from: { type: "keyword" },
           subject: { type: "text" },
           body: { type: "text" },
-          date: { type: "date" }, // <-- important
+          date: { type: "date" },
           category: { type: "keyword" },
           account: { type: "keyword" },
           folder: { type: "keyword" }

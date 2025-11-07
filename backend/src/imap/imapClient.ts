@@ -1,25 +1,23 @@
 import { ImapFlow } from "imapflow";
-import dotenv from "dotenv";
-dotenv.config();
+import { AccountConfig } from "./types";
 
-let client: ImapFlow | null = null;
+//Connects to the IMAP server for a given account.
 
-export async function connectToImap(): Promise<ImapFlow> {
-  if (client) return client;
 
-  client = new ImapFlow({
+export async function connectToImap(config: AccountConfig): Promise<ImapFlow> {
+  const client = new ImapFlow({
     host: "imap.gmail.com",
     port: 993,
     secure: true,
     auth: {
-      user: process.env.EMAIL_USER!,
-      pass: process.env.EMAIL_PASS!,
+      user: config.user,
+      pass: config.pass,
     },
     logger: false,
   });
 
   await client.connect();
-  console.log("✅ Connected to Gmail IMAP");
+  console.log(`Connected to IMAP for account: ${config.id}`);
 
   return client;
 }

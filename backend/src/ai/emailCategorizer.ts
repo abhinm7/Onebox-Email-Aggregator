@@ -26,8 +26,10 @@ export async function categorizeEmail(subject: string, body?: string) {
 
   while (attempt < maxRetries) {
     try {
-      // Add a small delay before every Gemini call (even first one)
-      await sleep(800 + Math.random() * 500); // 0.8–1.3s
+      // Changed to 1.1s+ to respect the 60 req/min free tier limit
+      await sleep(1100 + Math.random() * 500); // 1.1s–1.6s
+      // --- END OF FIX ---
+
       const aiCategory = await classifyWithGemini(content);
       if (aiCategory) return aiCategory;
 
@@ -46,7 +48,7 @@ export async function categorizeEmail(subject: string, body?: string) {
         continue;
       }
       // Handle other network or unknown errors
-      console.error("AI categorization failed:", err.message || err);
+      console.error("AI categorization failed:", (err as Error).message || err);
       break;
     }
   }
