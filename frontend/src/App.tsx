@@ -16,7 +16,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans">
       <header className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900">ReachInbox AI Dashboard</h1>
+        <h1 className="text-3xl font-extrabold text-gray-900">OneBox AI Dashboard</h1>
         <p className="text-gray-500">Feature 5: Searchable and Filterable Email Onebox.</p>
       </header>
 
