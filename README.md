@@ -1,4 +1,4 @@
-# ReachInbox AI Email Aggregator
+# AI Email Aggregator
 
 *This project is an advanced, feature-rich email aggregator designed to synchronize multiple IMAP accounts in real-time. It leverages Elasticsearch for powerful search and filtering, and uses a hybrid AI system (rule-based + Google Gemini) to automatically categorize incoming emails. A simple React frontend provides a "onebox" view to search and filter all processed emails.*
 
